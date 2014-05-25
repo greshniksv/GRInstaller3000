@@ -1,0 +1,26 @@
+DOTNET 4.0 for support windows XP
+
+1) (installer + archive with data). Data contain:
+	- execute script
+	- interface script
+	- file to install
+2) Archive type: (zip, 7zip, bzip)
+3) Encryption support file and string (for hide script or config data)
+4) Execute script:
+	- Support commands:
+		~ Copy, Move, Delete, Mkdir, Rmdir - graphically show action
+		~ File?, Dir?, Zip?, 7zip?, Bzip?  - return boolean
+		~ UnZip, Un7zip, UnBzip - uncompress
+		~ FileCountInDir, DirCount
+		~ FreeSpaceOnDrive, FileLength, DirLength - return in megabyte
+		~ if, unless
+		~ MessageBox, ConfirmBox
+		~ 
+    
+5) Interface script: 
+	- Support commands:
+		~ MainForm: OSize(Width,Height), OLocation(left, top)
+		~ Object (Label, Image[base64], Button, CheckBox, ListCheckBox, ComboBox) 
+			OSize(Width,Height), OLocation(left, top), OText
+		~ Function
+  
