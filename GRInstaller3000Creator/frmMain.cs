@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
+using GRInstaller3000Classes;
 
 namespace GRInstaller3000Creator
 {
@@ -25,6 +26,8 @@ namespace GRInstaller3000Creator
             srtbSourceScript.Settings.Keywords.Add("else");
             srtbSourceScript.Settings.Keywords.Add("elseif");
             srtbSourceScript.Settings.Keywords.Add("end");
+
+            Commands.GetList();
 
             // Set the comment identifier. For Lua this is two minus-signs after each other (--). 
             // For C++ we would set this property to "//".
