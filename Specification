@@ -24,3 +24,5 @@ DOTNET 4.0 for support windows XP
 			OSize(Width,Height), OLocation(left, top), OText
 		~ Function
 6) Translate startup commands to script
+
+7) Play git animation
