@@ -19,6 +19,7 @@ namespace GRInstaller3000Creator
 		private int m_nLineStart = 0;
 		private int m_nLineEnd = 0;
 		private string m_strKeywords = "";
+        private string m_strManageKeywords = "";
 		private int m_nCurSelection = 0;
 
 		/// <summary>
@@ -45,7 +46,20 @@ namespace GRInstaller3000Creator
 			else
 				base.WndProc(ref m);
 		}
-		/// <summary>
+
+	    protected override bool ProcessCmdKey(ref Message m, Keys keyData)
+	    {
+	        if (keyData == Keys.Tab)
+	        {
+                SelectionLength = 0;
+                SelectedText = new string(' ', 4);
+                return true;
+	        }
+
+	        return base.ProcessCmdKey(ref m, keyData);
+	    }
+
+	    /// <summary>
 		/// OnTextChanged
 		/// </summary>
 		/// <param name="e"></param>
@@ -90,6 +104,9 @@ namespace GRInstaller3000Creator
 
 			// Process the keywords
 			ProcessRegex(m_strKeywords, Settings.KeywordColor);
+            // Process the manage keywords
+            ProcessRegex(m_strManageKeywords, Settings.ManageKeywordColor);
+
 			// Process numbers
 			if(Settings.EnableIntegers)
 				ProcessRegex("\\b(?:[0-9]*\\.)?[0-9]+\\b", Settings.IntegerColor);
@@ -140,6 +157,16 @@ namespace GRInstaller3000Creator
 				else
 					m_strKeywords += "\\b" + strKeyword + "\\b|";
 			}
+
+            for (int i = 0; i < Settings.ManageKeywords.Count; i++)
+            {
+                string strKeyword = Settings.ManageKeywords[i];
+
+                if (i == Settings.ManageKeywords.Count - 1)
+                    m_strManageKeywords += "\\b" + strKeyword + "\\b";
+                else
+                    m_strManageKeywords += "\\b" + strKeyword + "\\b|";
+            }
 		}
 
 		public void ProcessAllLines()
@@ -180,6 +207,7 @@ namespace GRInstaller3000Creator
 	public class SyntaxSettings
 	{
 		SyntaxList m_rgKeywords = new SyntaxList();
+        SyntaxList m_rgManageKeywords = new SyntaxList();
 		string m_strComment = "";
 		Color m_colorComment = Color.Green;
 		Color m_colorString = Color.Gray;
@@ -189,6 +217,24 @@ namespace GRInstaller3000Creator
 		bool m_bEnableStrings = true;
 
 		#region Properties
+
+
+        /// <summary>
+        /// A list containing all keywords.
+        /// </summary>
+        public List<string> ManageKeywords
+        {
+            get { return m_rgManageKeywords.m_rgList; }
+        }
+        /// <summary>
+        /// The color of keywords.
+        /// </summary>
+        public Color ManageKeywordColor
+        {
+            get { return m_rgManageKeywords.m_color; }
+            set { m_rgManageKeywords.m_color = value; }
+        }
+
 		/// <summary>
 		/// A list containing all keywords.
 		/// </summary>

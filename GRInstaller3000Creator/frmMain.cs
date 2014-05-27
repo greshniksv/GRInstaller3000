@@ -12,6 +12,7 @@ namespace GRInstaller3000Creator
 {
     public partial class frmMain : Form
     {
+        ScriptEngine _engine = new ScriptEngine();
         public frmMain()
         {
             InitializeComponent();
@@ -20,28 +21,35 @@ namespace GRInstaller3000Creator
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-            srtbSourceScript.Settings.Keywords.Add("function");
-            srtbSourceScript.Settings.Keywords.Add("if");
-            srtbSourceScript.Settings.Keywords.Add("then");
-            srtbSourceScript.Settings.Keywords.Add("else");
-            srtbSourceScript.Settings.Keywords.Add("elseif");
-            srtbSourceScript.Settings.Keywords.Add("end");
+            srtbSourceScript.Settings.ManageKeywords.Add("def");
+            srtbSourceScript.Settings.ManageKeywords.Add("if");
+            srtbSourceScript.Settings.ManageKeywords.Add("then");
+            srtbSourceScript.Settings.ManageKeywords.Add("else");
+            srtbSourceScript.Settings.ManageKeywords.Add("elseif");
+            srtbSourceScript.Settings.ManageKeywords.Add("end");
+            srtbSourceScript.Settings.ManageKeywords.Add("var");
 
-            Commands.GetList();
+            foreach (var name in _engine.Command.GetCommandNameList())
+            {
+                srtbSourceScript.Settings.Keywords.Add(name);
+            }
+          
+            srtbSourceScript.Settings.KeywordColor = Color.DarkRed;
+
 
             // Set the comment identifier. For Lua this is two minus-signs after each other (--). 
             // For C++ we would set this property to "//".
             srtbSourceScript.Settings.Comment = "#";
             
             // Set the colors that will be used.
-            srtbSourceScript.Settings.KeywordColor = Color.Blue;
+            srtbSourceScript.Settings.ManageKeywordColor = Color.Blue;
             srtbSourceScript.Settings.CommentColor = Color.Green;
             srtbSourceScript.Settings.StringColor = Color.Gray;
             srtbSourceScript.Settings.IntegerColor = Color.Red;
 
             // Let's not process strings and integers.
-            srtbSourceScript.Settings.EnableStrings = false;
-            srtbSourceScript.Settings.EnableIntegers = false;
+            srtbSourceScript.Settings.EnableStrings = true;
+            srtbSourceScript.Settings.EnableIntegers = true;
 
             // Let's make the settings we just set valid by compiling
             // the keywords to a regular expression.
