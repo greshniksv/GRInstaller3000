@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,8 @@ namespace GRInstaller3000Classes
             string Execute(string param);
         }
 
-        public List<ICommand> _commandList;
+        private List<ICommand> _commandList;
+        private Hashtable _commandHashTable;
 
         public Commands()
         {
@@ -37,6 +39,12 @@ namespace GRInstaller3000Classes
 				new Alert(),
 				new Confirm()
 			};
+
+            foreach (var command in _commandList)
+            {
+                _commandHashTable.Add(command.Name(),command);
+            }
+
         }
 
         public string GetParamsFromCommand(string command)
@@ -46,11 +54,15 @@ namespace GRInstaller3000Classes
 
         public void Execute(string command)
         {
-            var cmd = _commandList.FirstOrDefault(com => command.Contains(com.Name()));
-            if (cmd == null) throw new Exception("command '" + command + "' not found !");
-            cmd.Execute(GetParamsFromCommand(command));
+            //var cmd = _commandList.FirstOrDefault(com => command.Contains(com.Name()));
+            //if (cmd == null) throw new Exception("command '" + command + "' not found !");
+            //cmd.Execute(GetParamsFromCommand(command));
 
-
+            var cmd = _commandHashTable[command] as ICommand;
+            if(cmd!=null)
+                cmd.Execute(GetParamsFromCommand(command));
+            else
+                throw new Exception("Command '"+command+"' not found !");
         }
 
         public IEnumerable<string> GetCommandNameList()
