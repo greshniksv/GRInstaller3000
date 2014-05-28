@@ -40,6 +40,7 @@ namespace GRInstaller3000Classes
 				new Confirm()
 			};
 
+            _commandHashTable = new Hashtable();
             foreach (var command in _commandList)
             {
                 _commandHashTable.Add(command.Name(),command);
@@ -52,13 +53,18 @@ namespace GRInstaller3000Classes
             return command.Substring(command.IndexOf('(') + 1, command.IndexOf(')') - (command.IndexOf('(') + 1)).Trim();
         }
 
+        public string GetCommandName(string command)
+        {
+            if (command.IndexOf("(", System.StringComparison.Ordinal)==-1) 
+                throw new Exception("Command does not have '(' !");
+
+            return command.Substring(0, command.IndexOf("(", System.StringComparison.Ordinal)).Trim();
+        }
+
         public void Execute(string command)
         {
-            //var cmd = _commandList.FirstOrDefault(com => command.Contains(com.Name()));
-            //if (cmd == null) throw new Exception("command '" + command + "' not found !");
-            //cmd.Execute(GetParamsFromCommand(command));
 
-            var cmd = _commandHashTable[command] as ICommand;
+            var cmd = _commandHashTable[GetCommandName(command)] as ICommand;
             if(cmd!=null)
                 cmd.Execute(GetParamsFromCommand(command));
             else

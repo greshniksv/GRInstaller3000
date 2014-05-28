@@ -28,20 +28,20 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.syntaxRichTextBox1 = new GRInstaller3000Creator.SyntaxRichTextBox();
+            this.srtbSource = new GRInstaller3000Creator.SyntaxRichTextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // syntaxRichTextBox1
+            // srtbSource
             // 
-            this.syntaxRichTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.srtbSource.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.syntaxRichTextBox1.Location = new System.Drawing.Point(12, 12);
-            this.syntaxRichTextBox1.Name = "syntaxRichTextBox1";
-            this.syntaxRichTextBox1.Size = new System.Drawing.Size(720, 330);
-            this.syntaxRichTextBox1.TabIndex = 0;
-            this.syntaxRichTextBox1.Text = "";
+            this.srtbSource.Location = new System.Drawing.Point(12, 12);
+            this.srtbSource.Name = "srtbSource";
+            this.srtbSource.Size = new System.Drawing.Size(720, 330);
+            this.srtbSource.TabIndex = 0;
+            this.srtbSource.Text = "";
             // 
             // button1
             // 
@@ -59,7 +59,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(744, 379);
             this.Controls.Add(this.button1);
-            this.Controls.Add(this.syntaxRichTextBox1);
+            this.Controls.Add(this.srtbSource);
             this.Name = "ExecuteLog";
             this.Text = "ExecuteLog";
             this.ResumeLayout(false);
@@ -68,7 +68,7 @@
 
         #endregion
 
-        private SyntaxRichTextBox syntaxRichTextBox1;
+        private SyntaxRichTextBox srtbSource;
         private System.Windows.Forms.Button button1;
     }
 }
