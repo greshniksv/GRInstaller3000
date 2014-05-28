@@ -90,6 +90,8 @@ namespace GRInstaller3000Creator
 			ProcessLine();
 
 			m_bPaint = true;
+
+			base.OnTextChanged(e);
 		}
 		/// <summary>
 		/// Process a line.

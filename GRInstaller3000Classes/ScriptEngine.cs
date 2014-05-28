@@ -29,6 +29,10 @@ namespace GRInstaller3000Classes
         private readonly List<FunctionItem> _functionList;
         private Variables _globalVariables;
 
+	    public delegate void FunctionExecuteCode(string function, string command);
+		public event FunctionExecuteCode FunctionExecuteCodeEvent = delegate {};
+
+
         public Commands Command
         {
             get { return new Commands(); }
@@ -48,6 +52,7 @@ namespace GRInstaller3000Classes
         {
             var functions = new Functions(
                 _functionList.FirstOrDefault(i => string.Equals(i.Name,funcName,StringComparison.CurrentCultureIgnoreCase)));
+			functions.ExecuteCodeEvent += (function, command) => FunctionExecuteCodeEvent(function, command);
             functions.Execute();
         }
 

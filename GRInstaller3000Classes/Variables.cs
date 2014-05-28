@@ -33,7 +33,12 @@ namespace GRInstaller3000Classes
             _variableList = new Hashtable();
         }
 
-        #region Create Variable
+	    public object GetData(string name)
+	    {
+			return ((VariableItem)_variableList[name]).Data;
+	    }
+
+	    #region Create Variable
         public void CreateVariable(string data)
         {
             if (data.Contains("="))
@@ -124,5 +129,11 @@ namespace GRInstaller3000Classes
 
         #endregion
 
-    }
+		#region VariablesProperties
+
+
+
+		#endregion
+
+	}
 }

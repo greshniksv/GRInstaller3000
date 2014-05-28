@@ -22,6 +22,12 @@ namespace GRInstaller3000Creator
 
         private void frmMain_Load(object sender, EventArgs e)
         {
+	        _engine.FunctionExecuteCodeEvent += (function, command) =>
+	        {
+		        lbLog.Items.Insert(0,function+": "+command);
+	        };
+
+
             srtbSource.Settings.ManageKeywords.Add("def");
             srtbSource.Settings.ManageKeywords.Add("if");
             srtbSource.Settings.ManageKeywords.Add("then");
@@ -81,6 +87,8 @@ namespace GRInstaller3000Creator
         {
             if (e.KeyCode == Keys.F5)
             {
+				lbLog.Items.Clear();
+
                 _engine.LoadFromString(srtbSource.Text);
                 _engine.ExecuteFunction();
             }
@@ -91,14 +99,27 @@ namespace GRInstaller3000Creator
                 {
                     tw.Write(srtbSource.Text);
                 }
+	            if (Text.Contains("*")) Text = Text.Remove(Text.IndexOf('*'), 1);
             }
             
         }
 
         private void lbCommandList_SelectedIndexChanged(object sender, EventArgs e)
         {
+			if (lbCommandList.SelectedIndex==-1) return;
 
+	        rtbCommandInfo.Text =
+		        ((Commands.ICommand) _engine.Command.GetCommandHashTable()[lbCommandList.SelectedItem]).Information();
 
         }
+
+		private void srtbSource_TextChanged(object sender, EventArgs e)
+		{
+			if (!Text.Contains("*"))
+			{
+				Text = Text+@"*";
+			}
+
+		}
     }
 }

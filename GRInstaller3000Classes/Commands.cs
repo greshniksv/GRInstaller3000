@@ -28,8 +28,8 @@ namespace GRInstaller3000Classes
             string Execute(string param);
         }
 
-        private List<ICommand> _commandList;
-        private Hashtable _commandHashTable;
+        private readonly List<ICommand> _commandList;
+        private readonly Hashtable _commandHashTable;
 
         public Commands()
         {
@@ -48,12 +48,25 @@ namespace GRInstaller3000Classes
 
         }
 
-        public string GetParamsFromCommand(string command)
+		public IEnumerable<string> GetCommandNameList()
+		{
+			return _commandList.Select(i => i.Name());
+		}
+
+		public Hashtable GetCommandHashTable()
+		{
+			return _commandHashTable;
+		}
+
+
+
+
+        private string GetParamsFromCommand(string command)
         {
             return command.Substring(command.IndexOf('(') + 1, command.IndexOf(')') - (command.IndexOf('(') + 1)).Trim();
         }
 
-        public string GetCommandName(string command)
+        private string GetCommandName(string command)
         {
             if (command.IndexOf("(", System.StringComparison.Ordinal)==-1) 
                 throw new Exception("Command does not have '(' !");
@@ -71,16 +84,7 @@ namespace GRInstaller3000Classes
                 throw new Exception("Command '"+command+"' not found !");
         }
 
-        public IEnumerable<string> GetCommandNameList()
-        {
-            return _commandList.Select(i => i.Name());
-        }
-
-        public List<ICommand> GetCommandList()
-        {
-            return _commandList;
-        }
-
+       
 
         #region Commands
 
@@ -93,7 +97,7 @@ namespace GRInstaller3000Classes
 
             public string Information()
             {
-                return "Info: Show a message.\n alert(massage,caption,icon)\n " +
+                return "Info: Show a message.\n\nExample: alert(massage,caption,icon)\n\n" +
                     "Icon: asterisk, error, exclamation, hand, information, none, question, stop, warning";
             }
 
@@ -104,7 +108,7 @@ namespace GRInstaller3000Classes
 
                 MessageBoxIcon icon;
                 if (!Enum.TryParse(parameters[2], true, out icon)) icon = MessageBoxIcon.Error;
-                MessageBox.Show(parameters[0], parameters[1], MessageBoxButtons.OK, icon);
+				MessageBox.Show(parameters[0], parameters[1], MessageBoxButtons.OK, (MessageBoxIcon)icon);
 
                 return null;
             }
@@ -121,8 +125,8 @@ namespace GRInstaller3000Classes
 
             public string Information()
             {
-                return "Info: Show a message.\n alert(massage,caption,icon,button)\n " +
-                    "Icon: asterisk, error, exclamation, hand, information, none, question, stop, warning\n" +
+				return "Info: Show a message.\n\nExample: confirm(massage,caption,icon,button)\n\n" +
+                    "Icon: asterisk, error, exclamation, hand, information, none, question, stop, warning\n\n" +
                     "Button: AbortRetryIgnore,OK,OKCancel,RetryCancel,YesNo,YesNoCancel";
             }
 
