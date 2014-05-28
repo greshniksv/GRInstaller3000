@@ -30,6 +30,11 @@ namespace GRInstaller3000Creator
             srtbSource.Settings.ManageKeywords.Add("end");
             srtbSource.Settings.ManageKeywords.Add("var");
 
+            foreach (var varType in _engine.GetVariableTypeList())
+            {
+                srtbSource.Settings.ManageKeywords.Add(varType);
+            }
+            
             foreach (var name in _engine.Command.GetCommandNameList())
             {
                 srtbSource.Settings.Keywords.Add(name);
@@ -77,7 +82,7 @@ namespace GRInstaller3000Creator
             if (e.KeyCode == Keys.F5)
             {
                 _engine.LoadFromString(srtbSource.Text);
-                _engine.ExecuteFunc();
+                _engine.ExecuteFunction();
             }
 
             if (e.KeyCode == Keys.S && e.Control)
