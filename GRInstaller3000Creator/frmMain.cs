@@ -22,11 +22,7 @@ namespace GRInstaller3000Creator
 
         private void frmMain_Load(object sender, EventArgs e)
         {
-	        _engine.FunctionExecuteCodeEvent += (function, command) =>
-	        {
-		        lbLog.Items.Insert(0,function+": "+command);
-	        };
-
+	        _engine.FunctionExecuteCodeEvent += (function, command) => lbLog.Items.Insert(0,function+": "+command);
 
             srtbSource.Settings.ManageKeywords.Add("def");
             srtbSource.Settings.ManageKeywords.Add("if");
