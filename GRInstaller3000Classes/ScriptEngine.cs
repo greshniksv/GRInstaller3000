@@ -13,12 +13,13 @@ namespace GRInstaller3000Classes
 
     public class FunctionItem : ICloneable
     {
-        public string Name;
-        public List<string> Code;
+        public string Name { get; set; }
+        public List<string> Code { get; set; }
+        public string Id { get; set; }
 
         public object Clone()
         {
-            return new FunctionItem() { Name = this.Name, Code = this.Code };
+            return new FunctionItem() { Name = this.Name, Code = new List<string>(this.Code) };
         }
     }
 
@@ -50,10 +51,13 @@ namespace GRInstaller3000Classes
 
         public void ExecuteFunction(string funcName = "main")
         {
-            var functions = new Functions(
-                _functionList.FirstOrDefault(i => string.Equals(i.Name,funcName,StringComparison.CurrentCultureIgnoreCase)));
-			functions.ExecuteCodeEvent += (function, command) => FunctionExecuteCodeEvent(function, command);
-            functions.Execute();
+            using (var functions = new Functions(
+                _functionList.FirstOrDefault(
+                    i => string.Equals(i.Name, funcName, StringComparison.CurrentCultureIgnoreCase))))
+            {
+                functions.ExecuteCodeEvent += (function, command) => FunctionExecuteCodeEvent(function, command);
+                functions.Execute();
+            }
         }
 
         
@@ -64,7 +68,7 @@ namespace GRInstaller3000Classes
             CreateFunction(data.Split('\n'));
         }
 
-	    public void LoadScript(string file)
+	    public void LoadFromFile(string file)
         {
             int ifLevel = 0;
             var func = new List<FunctionItem>();
@@ -87,7 +91,7 @@ namespace GRInstaller3000Classes
                 if (buf.Contains("def"))
                 {
                     var funcName = buf.Remove(buf.IndexOf("def"), 3).Trim();
-                    func.Add(new FunctionItem() { Name = funcName, Code = new List<string>() });
+                    func.Add(new FunctionItem() { Name = funcName, Code = new List<string>(), Id=Guid.NewGuid().ToString() });
                 }
 
                 if(manageWords.Any(buf.Contains))

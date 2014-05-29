@@ -7,7 +7,7 @@ using System.Windows.Forms;
 
 namespace GRInstaller3000Classes
 {
-    public class Commands
+    public class Commands : IDisposable
     {
         /* Commands:
          * Copy, Move, Rm, MkDir, RmDir, 
@@ -28,8 +28,8 @@ namespace GRInstaller3000Classes
             string Execute(string param);
         }
 
-        private readonly List<ICommand> _commandList;
-        private readonly Hashtable _commandHashTable;
+        private List<ICommand> _commandList;
+        private Hashtable _commandHashTable;
 
         public Commands()
         {
@@ -58,9 +58,6 @@ namespace GRInstaller3000Classes
 			return _commandHashTable;
 		}
 
-
-
-
         private string GetParamsFromCommand(string command)
         {
             return command.Substring(command.IndexOf('(') + 1, command.IndexOf(')') - (command.IndexOf('(') + 1)).Trim();
@@ -84,7 +81,6 @@ namespace GRInstaller3000Classes
                 throw new Exception("Command '"+command+"' not found !");
         }
 
-       
 
         #region Commands
 
@@ -150,6 +146,32 @@ namespace GRInstaller3000Classes
 
         #endregion
 
+        #region Despose patternt
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // Implement dispose pattern
+        public void Dispose(bool managed)
+        {
+            if (managed)
+            {
+                if (_commandList != null)
+                {
+                    _commandList.Clear();
+                    _commandList = null;
+                }
+
+                if (_commandHashTable != null)
+                {
+                    _commandHashTable.Clear();
+                    _commandHashTable = null;
+                }
+            }
+        }
+        #endregion
 
     }
 }

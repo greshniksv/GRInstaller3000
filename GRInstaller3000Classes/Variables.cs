@@ -7,9 +7,9 @@ using System.Text;
 
 namespace GRInstaller3000Classes
 {
-    internal class Variables
+    internal class Variables : IDisposable
     {
-        private readonly Hashtable _variableList;
+        private Hashtable _variableList;
 
         private enum VariableType
         {
@@ -18,6 +18,7 @@ namespace GRInstaller3000Classes
 
         class VariableItem
         {
+            public string StatementId { get; set; }
             public string Name { get; set; }
             public object Data { get; set; }
             public VariableType Type { get; set; }
@@ -38,8 +39,21 @@ namespace GRInstaller3000Classes
 			return ((VariableItem)_variableList[name]).Data;
 	    }
 
-	    #region Create Variable
-        public void CreateVariable(string data)
+        public void ClearByStatementId(string id)
+        {
+            var removeList =
+                _variableList.Keys.Cast<object>()
+                    .Where(key => ((VariableItem) _variableList[key]).StatementId == id)
+                    .ToList();
+
+            foreach (var removeKey in removeList)
+            {
+                _variableList.Remove(removeKey);
+            }
+        }
+
+        #region Create Variable
+        public void CreateVariable(string data, string statementId)
         {
             if (data.Contains("="))
             {
@@ -83,7 +97,7 @@ namespace GRInstaller3000Classes
                 }
 
                 //dataMass: 0 - type, 1 - name, 2 - data
-                _variableList.Add(dataMass[1], new VariableItem() { Name = dataMass[1], Type = (VariableType)Enum.Parse(typeof(VariableType), dataMass[0], true), Data = variable });
+                _variableList.Add(dataMass[1], new VariableItem() { StatementId =statementId, Name = dataMass[1], Type = (VariableType)Enum.Parse(typeof(VariableType), dataMass[0], true), Data = variable });
 
             }
             else
@@ -123,7 +137,7 @@ namespace GRInstaller3000Classes
                 }
 
                 //dataMass: 0 - type, 1 - name, 2 - data
-                _variableList.Add(dataMass[1], new VariableItem() { Name = dataMass[1], Type = (VariableType)Enum.Parse(typeof(VariableType), dataMass[0], true), Data = variable });
+                _variableList.Add(dataMass[1], new VariableItem() { StatementId = statementId, Name = dataMass[1], Type = (VariableType)Enum.Parse(typeof(VariableType), dataMass[0], true), Data = variable });
             }
         }
 
@@ -135,5 +149,25 @@ namespace GRInstaller3000Classes
 
 		#endregion
 
-	}
+        #region Despose patternt
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        // Implement dispose pattern
+        public void Dispose(bool managed)
+        {
+            if (managed)
+            {
+                if (_variableList != null)
+                {
+                    _variableList.Clear();
+                    _variableList = null;
+                }
+            }
+        }
+        #endregion
+    }
 }
