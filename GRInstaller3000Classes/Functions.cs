@@ -77,6 +77,13 @@ namespace GRInstaller3000Classes
             statementList.Add(Guid.NewGuid().ToString());
             var cmdList = codeItem.Split(' ');
 
+            object dd = 1;
+
+            var z = (_variables.GetData("boby")).GetType().FullName;
+            Type myClassType = Type.GetType(z);
+            var r = (myClassType) (_variables.GetData("boby")) as myClassType;
+
+            /*
             for (int i = 0; i < cmdList.Count();)
             {
                 object q = cmdList[i];
@@ -100,7 +107,7 @@ namespace GRInstaller3000Classes
 				((q is double) ? (double)q :
 				((q is List<string>) ? (List<string>)q :
 				((q is List<int>) ? (List<int>)q : q))))));
-
+            */
 	    }
 
 

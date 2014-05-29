@@ -7,6 +7,14 @@ using System.Text;
 
 namespace GRInstaller3000Classes
 {
+    public class VariableItem
+    {
+        public string StatementId { get; set; }
+        public string Name { get; set; }
+        public object Data { get; set; }
+        public Type VarType { get; set; }
+    }
+
     internal class Variables : IDisposable
     {
         private Hashtable _variableList;
@@ -14,14 +22,6 @@ namespace GRInstaller3000Classes
         private enum VariableType
         {
             String, Int, Bool, Double, ListString, ListInt
-        }
-
-        class VariableItem
-        {
-            public string StatementId { get; set; }
-            public string Name { get; set; }
-            public object Data { get; set; }
-            public VariableType Type { get; set; }
         }
 
         public string[] GetVariableTypeList()
@@ -62,10 +62,14 @@ namespace GRInstaller3000Classes
                 var varContains = data.Substring(data.IndexOf('=') + 1, data.Length - (data.IndexOf('=') + 1));
                 //if (dataMass.Count() != 3)  throw new Exception("Variable with initializer structure error !");
                 object variable = null;
+                Type varType = null;
 
                 // example: string boby = "hi"
                 if (string.Equals(dataMass[0], "String", StringComparison.CurrentCultureIgnoreCase))
+                {
                     variable = varContains.Replace('"', ' ').Trim();
+                    varType = typeof (string);
+                }
 
                 // example: int boby = 10
                 if (string.Equals(dataMass[0], "Int", StringComparison.CurrentCultureIgnoreCase))
@@ -97,7 +101,7 @@ namespace GRInstaller3000Classes
                 }
 
                 //dataMass: 0 - type, 1 - name, 2 - data
-                _variableList.Add(dataMass[1], new VariableItem() { StatementId =statementId, Name = dataMass[1], Type = (VariableType)Enum.Parse(typeof(VariableType), dataMass[0], true), Data = variable });
+                _variableList.Add(dataMass[1], new VariableItem() { StatementId =statementId, Name = dataMass[1], VarType = varType, Data = variable });
 
             }
             else
@@ -106,6 +110,7 @@ namespace GRInstaller3000Classes
                 var dataMass = data.Split(' ');
                 if (dataMass.Count() != 2) throw new Exception("Variable with initializer structure error !");
                 object variable = null;
+                Type varType = null;
 
                 // example: string boby
                 if (string.Equals(dataMass[0], "String", StringComparison.CurrentCultureIgnoreCase))
@@ -137,7 +142,7 @@ namespace GRInstaller3000Classes
                 }
 
                 //dataMass: 0 - type, 1 - name, 2 - data
-                _variableList.Add(dataMass[1], new VariableItem() { StatementId = statementId, Name = dataMass[1], Type = (VariableType)Enum.Parse(typeof(VariableType), dataMass[0], true), Data = variable });
+                _variableList.Add(dataMass[1], new VariableItem() { StatementId = statementId, Name = dataMass[1], VarType = varType, Data = variable });
             }
         }
 
