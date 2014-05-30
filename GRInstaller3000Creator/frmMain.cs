@@ -117,5 +117,12 @@ namespace GRInstaller3000Creator
 			}
 
 		}
+
+        private void toolStripButton1_Click(object sender, EventArgs e)
+        {
+            string[] i = new string[1];
+            i.GetType();
+
+        }
     }
 }

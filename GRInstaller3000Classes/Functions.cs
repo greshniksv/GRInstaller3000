@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Windows.Forms;
 
 namespace GRInstaller3000Classes
 {
@@ -77,37 +78,8 @@ namespace GRInstaller3000Classes
             statementList.Add(Guid.NewGuid().ToString());
             var cmdList = codeItem.Split(' ');
 
-            object dd = 1;
+            MessageBox.Show(_variables.GetData("boby").ToString());
 
-            var z = (_variables.GetData("boby")).GetType().FullName;
-            Type myClassType = Type.GetType(z);
-            var r = (myClassType) (_variables.GetData("boby")) as myClassType;
-
-            /*
-            for (int i = 0; i < cmdList.Count();)
-            {
-                object q = cmdList[i];
-                var oper1 = ((q is string) ? (string)q :
-                ((q is int) ? (int)q :
-                ((q is bool) ? (bool)q :
-                ((q is double) ? (double)q :
-                ((q is List<string>) ? (List<string>)q :
-                ((q is List<int>) ? (List<int>)q : q))))));
-
-                i++;
-            }
-
-
-		    
-			
-
-			var oper2 = ((q is string) ? (string)q :
-				((q is int) ? (int)q :
-				((q is bool) ? (bool)q :
-				((q is double) ? (double)q :
-				((q is List<string>) ? (List<string>)q :
-				((q is List<int>) ? (List<int>)q : q))))));
-            */
 	    }
 
 
