@@ -53,7 +53,7 @@ namespace GRInstaller3000Classes
         {
             using (var functions = new Functions(
                 _functionList.FirstOrDefault(
-                    i => string.Equals(i.Name, funcName, StringComparison.CurrentCultureIgnoreCase))))
+					i => string.Equals(i.Name, funcName, StringComparison.OrdinalIgnoreCase))))
             {
                 functions.ExecuteCodeEvent += (function, command) => FunctionExecuteCodeEvent(function, command);
                 functions.Execute();

@@ -23,6 +23,13 @@ namespace GRInstaller3000Classes
 			Set(ob, name);
 		}
 
+		public VariableItem(object ob)
+		{
+			Name = Guid.NewGuid().ToString();
+			Set(ob, Name);
+		}
+
+
 		public string StatementId { get; set; }
 		public string Name { get; set; }
 		public VariableType Type { get; set; }
@@ -180,21 +187,24 @@ namespace GRInstaller3000Classes
 		{
 			if(a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: ["+a.Name+"] - ["+b.Name+"]");
 
-			if (a.Type == VariableType.String || a.Type == VariableType.Bool || a.Type == VariableType.Char)
+			if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte ||
+			    a.Type == VariableType.Char)
+			{
+				switch (a.Type)
+				{
+					case VariableType.Int:
+						return a._Int > b._Int;
+					case VariableType.Double:
+						return a._Double > b._Double;
+					case VariableType.Byte:
+						return a._Byte > b._Byte;
+					case VariableType.Char:
+						return a._Char > b._Char;
+				}
+			}
+			else
 			{
 				throw new Exception("Types can not be compared. Variable: [" + a.Name + "] - [" + b.Name + "]");
-			}
-
-			switch (a.Type)
-			{
-				case VariableType.Int:
-					return a._Int > b._Int;
-				case VariableType.Double:
-					return a._Double > b._Double;
-				case VariableType.Byte:
-					return a._Byte > b._Byte;
-				case VariableType.Char:
-					return a._Char > b._Char;
 			}
 
 			return false;
@@ -204,21 +214,24 @@ namespace GRInstaller3000Classes
 		{
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
-			if (a.Type == VariableType.String || a.Type == VariableType.Bool)
+			if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte ||
+				a.Type == VariableType.Char)
+			{
+				switch (a.Type)
+				{
+					case VariableType.Int:
+						return a._Int < b._Int;
+					case VariableType.Double:
+						return a._Double < b._Double;
+					case VariableType.Byte:
+						return a._Byte < b._Byte;
+					case VariableType.Char:
+						return a._Char < b._Char;
+				}
+			}
+			else
 			{
 				throw new Exception("Types can not be compared. Variable: [" + a.Name + "] - [" + b.Name + "]");
-			}
-
-			switch (a.Type)
-			{
-				case VariableType.Int:
-					return a._Int < b._Int;
-				case VariableType.Double:
-					return a._Double < b._Double;
-				case VariableType.Byte:
-					return a._Byte < b._Byte;
-				case VariableType.Char:
-					return a._Char < b._Char;
 			}
 
 			return false;
@@ -228,6 +241,21 @@ namespace GRInstaller3000Classes
 		{
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
+			switch (a.Type)
+			{
+				case VariableType.Int:
+					return a._Int == b._Int;
+				case VariableType.Double:
+					return a._Double == b._Double;
+				case VariableType.Byte:
+					return a._Byte == b._Byte;
+				case VariableType.Char:
+					return a._Char == b._Char;
+				case VariableType.String:
+					return a._String == b._String;
+				case VariableType.Bool:
+					return a._Bool == b._Bool;
+			}
 
 			return false;
 		}
@@ -236,41 +264,115 @@ namespace GRInstaller3000Classes
 		{
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
-
+			switch (a.Type)
+			{
+				case VariableType.Int:
+					return a._Int != b._Int;
+				case VariableType.Double:
+					return a._Double != b._Double;
+				case VariableType.Byte:
+					return a._Byte != b._Byte;
+				case VariableType.Char:
+					return a._Char != b._Char;
+				case VariableType.String:
+					return a._String != b._String;
+				case VariableType.Bool:
+					return a._Bool != b._Bool;
+			}
 
 			return false;
 		}
 
 
-		public static bool operator +(VariableItem a, VariableItem b)
+		public static VariableItem operator +(VariableItem a, VariableItem b)
 		{
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
+			if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte ||
+				a.Type == VariableType.String)
+			{
+				switch (a.Type)
+				{
+					case VariableType.Int:
+						return new VariableItem(a._Int + b._Int);
+					case VariableType.Double:
+						return new VariableItem(a._Double + b._Double);
+					case VariableType.Byte:
+						return new VariableItem(a._Byte + b._Byte);
+					case VariableType.String:
+						return new VariableItem(a._String + b._String);
+				}
+			}
 
-			return false;
+			throw new Exception("Unary operation (+) return null !");
 		}
 
-		public static bool operator -(VariableItem a, VariableItem b)
+		public static VariableItem operator -(VariableItem a, VariableItem b)
 		{
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
+			if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte)
+			{
+				switch (a.Type)
+				{
+					case VariableType.Int:
+						return new VariableItem(a._Int - b._Int);
+					case VariableType.Double:
+						return new VariableItem(a._Double - b._Double);
+					case VariableType.Byte:
+						return new VariableItem(a._Byte- b._Byte);
+				}
+			}
 
-			return false;
+			throw new Exception("Unary operation (+) return null !");
 		}
 
-		public static bool operator /(VariableItem a, VariableItem b)
+		public static VariableItem operator /(VariableItem a, VariableItem b)
 		{
+			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
+			if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte)
+			{
+				switch (a.Type)
+				{
+					case VariableType.Int:
+						return new VariableItem(a._Int / b._Int);
+					case VariableType.Double:
+						return new VariableItem(a._Double / b._Double);
+					case VariableType.Byte:
+						return new VariableItem((byte)(a._Byte / b._Byte));
+				}
+			}
 
-			return false;
+			throw new Exception("Unary operation (+) return null !");
 		}
 
 
-		public static bool operator *(VariableItem a, VariableItem b)
+		public static VariableItem operator *(VariableItem a, VariableItem b)
 		{
 
+			if (a.Type != b.Type || (a.Type==VariableType.String && b.Type==VariableType.Int)) 
+				throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
-			return false;
+			if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte ||
+				a.Type == VariableType.String)
+			{
+				switch (a.Type)
+				{
+					case VariableType.Int:
+						return new VariableItem(a._Int * b._Int);
+					case VariableType.Double:
+						return new VariableItem(a._Double * b._Double);
+					case VariableType.Byte:
+						return new VariableItem((byte)(a._Byte * b._Byte));
+					case VariableType.String:
+						string ret = string.Empty;
+						for (int i = 0; i < b._Int; i++) ret += a._String;
+						return new VariableItem(ret);
+				}
+			}
+
+			throw new Exception("Unary operation (*) return null !");
 		}
 
 
@@ -334,32 +436,32 @@ namespace GRInstaller3000Classes
 				object variable = null;
 
 				// example: string boby = "hi"
-				if (string.Equals(dataList[0], "String", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "String", StringComparison.OrdinalIgnoreCase))
 					variable = varContainer.Replace('"', ' ').Trim();
 
 				// example: int boby = 10
-				if (string.Equals(dataList[0], "Int", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "Int", StringComparison.OrdinalIgnoreCase))
 					variable = int.Parse(varContainer);
 
 				// example: bool boby = false
-				if (string.Equals(dataList[0], "Bool", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "Bool", StringComparison.OrdinalIgnoreCase))
 					variable = Boolean.Parse(varContainer);
 
 				// example: double boby = 1.25
-				if (string.Equals(dataList[0], "Double", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "Double", StringComparison.OrdinalIgnoreCase))
 					variable = Double.Parse(varContainer, NumberStyles.Any);
 
 				// example: byte boby = 125
-				if (string.Equals(dataList[0], "Byte", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "Byte", StringComparison.OrdinalIgnoreCase))
 					variable = byte.Parse(varContainer, NumberStyles.Any);
 
 				// example: char boby = 'a'
-				if (string.Equals(dataList[0], "Byte", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "Byte", StringComparison.OrdinalIgnoreCase))
 					variable = char.Parse(varContainer);
 
 
 				// Example: ListString Boby = {"1","1","1","1","1"}
-				if (string.Equals(dataList[0], "ListString", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "ListString", StringComparison.OrdinalIgnoreCase))
 				{
 					if (!varContainer.Contains('{') || !varContainer.Contains('}'))
 						throw new Exception("ListString initializer incorrect !");
@@ -367,7 +469,7 @@ namespace GRInstaller3000Classes
 				}
 
 				// Example: ListInt Boby = {1,1,1,1,1}
-				if (string.Equals(dataList[0], "ListInt", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "ListInt", StringComparison.OrdinalIgnoreCase))
 				{
 					if (!varContainer.Contains('{') || !varContainer.Contains('}'))
 						throw new Exception("ListInt initializer incorrect !");
@@ -376,16 +478,16 @@ namespace GRInstaller3000Classes
 				}
 
 				// Example: ListDouble Boby = {1.56,1,1,1,1}
-				if (string.Equals(dataList[0], "ListDouble", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "ListDouble", StringComparison.OrdinalIgnoreCase))
 				{
 					if (!varContainer.Contains('{') || !varContainer.Contains('}'))
 						throw new Exception("ListDouble initializer incorrect !");
 					var buf2 = varContainer.Replace('{', ' ').Replace('}', ' ').Trim().Split(',');
-					variable = buf2.Select(double.Parse).ToList();
+					variable = buf2.Select(i => double.Parse(i, NumberStyles.Any, CultureInfo.GetCultureInfo("en-US"))).ToList();
 				}
 
 				// Example: ListBool Boby = {true,false,true}
-				if (string.Equals(dataList[0], "ListBool", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "ListBool", StringComparison.OrdinalIgnoreCase))
 				{
 					if (!varContainer.Contains('{') || !varContainer.Contains('}'))
 						throw new Exception("ListBool initializer incorrect !");
@@ -394,7 +496,7 @@ namespace GRInstaller3000Classes
 				}
 
 				// Example: ListByte Boby = {10,125,180}
-				if (string.Equals(dataList[0], "ListByte", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "ListByte", StringComparison.OrdinalIgnoreCase))
 				{
 					if (!varContainer.Contains('{') || !varContainer.Contains('}'))
 						throw new Exception("ListByte initializer incorrect !");
@@ -403,18 +505,17 @@ namespace GRInstaller3000Classes
 				}
 
 				// Example: ListChar Boby = {'a',';','r'}
-				if (string.Equals(dataList[0], "ListByte", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "ListChar", StringComparison.OrdinalIgnoreCase))
 				{
 					if (!varContainer.Contains('{') || !varContainer.Contains('}'))
-						throw new Exception("ListByte initializer incorrect !");
-					var buf2 = varContainer.Replace('{', ' ').Replace('}', ' ').Trim().Split(',');
-					variable = buf2.Select(char.Parse).ToList();
+						throw new Exception("ListChar initializer incorrect !");
+					var buf2 = varContainer.Replace('{', ' ').Replace('}', ' ').Replace('\'', ' ').Trim().Split(',');
+					variable = buf2.Select(i=>char.Parse(i.Trim())).ToList();
 				}
 
 				//dataMass: 0 - type, 1 - name, 2 - data
 				_variableList.Add(dataList[1], new VariableItem(variable, dataList[1]) { StatementId = statementId });
-				//_variableList.Add(dataMass[1], new VariableItem() { StatementId =statementId, Name = dataMass[1], Data = variable });
-
+				
 			}
 			else
 			{
@@ -429,27 +530,27 @@ namespace GRInstaller3000Classes
 				Type varType = null;
 
 				// example: string boby
-				if (string.Equals(dataList[0], "String", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "String", StringComparison.OrdinalIgnoreCase))
 					variable = string.Empty;
 
 				// example: int boby
-				if (string.Equals(dataList[0], "Int", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "Int", StringComparison.OrdinalIgnoreCase))
 					variable = new int();
 
 				// example: bool boby
-				if (string.Equals(dataList[0], "Bool", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "Bool", StringComparison.OrdinalIgnoreCase))
 					variable = new bool();
 
 				// example: double boby
-				if (string.Equals(dataList[0], "Double", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "Double", StringComparison.OrdinalIgnoreCase))
 					variable = new double();
 
 				// Example: ListString Boby
-				if (string.Equals(dataList[0], "ListString", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "ListString", StringComparison.OrdinalIgnoreCase))
 					variable = new List<string>();
 
 				// Example: ListString Boby
-				if (string.Equals(dataList[0], "ListInt", StringComparison.CurrentCultureIgnoreCase))
+				if (string.Equals(dataList[0], "ListInt", StringComparison.OrdinalIgnoreCase))
 				{
 					if (!dataList[3].Contains('{') || !dataList[3].Contains('}'))
 						throw new Exception("ListInt initializer incorrect !");
@@ -459,7 +560,7 @@ namespace GRInstaller3000Classes
 
 				//dataMass: 0 - type, 1 - name, 2 - data
 				_variableList.Add(dataList[1], new VariableItem(variable, dataList[1]) { StatementId = statementId });
-				//_variableList.Add(dataMass[1], new VariableItem() { StatementId = statementId, Name = dataMass[1], VarType = varType, Data = variable });
+				
 			}
 		}
 

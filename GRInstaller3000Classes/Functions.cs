@@ -43,8 +43,19 @@ namespace GRInstaller3000Classes
 					continue;
 				}
 
+
+
+
 				var codeItem = _currentFunc.Code[pos];
 	            ExecuteCodeEvent(_currentFunc.Name,codeItem);
+
+				// remove comment string
+				if (codeItem.Contains("#"))
+				{
+					codeItem = codeItem.Substring(codeItem.IndexOf("#"), codeItem.Length - codeItem.IndexOf("#")).Trim();
+					if (codeItem.Length < 1) continue;
+				}
+
 
 				// Detect managed words
 				if (managerialWords.Any(codeItem.Contains))
@@ -74,11 +85,17 @@ namespace GRInstaller3000Classes
         private void CalculateJumpOper(int pos, ref List<string> statementList)
 	    {
             var codeItem = _currentFunc.Code[pos];
-		    bool main = false;
             statementList.Add(Guid.NewGuid().ToString());
             var cmdList = codeItem.Split(' ');
 
-            MessageBox.Show(_variables.GetData("boby").ToString());
+	        if (cmdList[0].Equals("if", StringComparison.OrdinalIgnoreCase))
+	        {
+
+
+
+
+	        }
+
 
 	    }
 
