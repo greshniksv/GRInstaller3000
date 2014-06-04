@@ -24,6 +24,21 @@ namespace GRInstaller3000Creator
 
 	    private Dictionary<string, Color> _colorizeWordDic = new Dictionary<string, Color>();
 
+		public Dictionary<string, Color> ColorizeWordDic {
+			get { return _colorizeWordDic; }
+			set { _colorizeWordDic = value; }
+		}
+
+		public void InitColorizeWord(string s, Color c)
+		{
+			foreach (var s1 in s.Split(',')) _colorizeWordDic.Add(s1.ToLower(),c);
+		}
+
+		public void AddWord(string s, Color c)
+		{
+			_colorizeWordDic.Add(s.ToLower(), c);
+		}
+
 		/// <summary>
 		/// The settings.
 		/// </summary>
@@ -106,20 +121,25 @@ namespace GRInstaller3000Creator
 			SelectionLength = m_nLineLength;
 			SelectionColor = Color.Black;
 
-            			// Process the keywords
-                        ProcessRegex(m_strKeywords, Settings.KeywordColor);
-                        // Process the manage keywords
-                        ProcessRegex(m_strManageKeywords, Settings.ManageKeywordColor);
-                        
-                                    // Process numbers
-                                    if(Settings.EnableIntegers)
-                                        ProcessRegex("\\b(?:[0-9]*\\.)?[0-9]+\\b", Settings.IntegerColor);
-                                    // Process strings
-                                    if(Settings.EnableStrings)
-                                        ProcessRegex("\"[^\"\\\\\\r\\n]*(?:\\\\.[^\"\\\\\\r\\n]*)*\"", Settings.StringColor);
-                                    // Process comments
-                                    if(Settings.EnableComments && !string.IsNullOrEmpty(Settings.Comment))
-                                        ProcessRegex(Settings.Comment + ".*$", Settings.CommentColor);
+            // Process the keywords
+            //ProcessRegex(m_strKeywords, Settings.KeywordColor);
+            // Process the manage keywords
+            //ProcessRegex(m_strManageKeywords, Settings.ManageKeywordColor);
+			ProgressWord(m_strLine);
+            
+			// Process numbers
+			if(Settings.EnableIntegers)
+				ProcessRegex("\\b(?:[0-9]*\\.)?[0-9]+\\b", Settings.IntegerColor);
+			// Process strings
+			if (Settings.EnableStrings)
+			{
+				ProcessRegex("\"[^\"\\\\\\r\\n]*(?:\\\\.[^\"\\\\\\r\\n]*)*\"", Settings.StringColor);
+				ProcessRegex("\'[^\'\\\\\\r\\n]*(?:\\\\.[^\"\\\\\\r\\n]*)*\'", Settings.StringColor);
+			}
+
+			// Process comments
+			if(Settings.EnableComments && !string.IsNullOrEmpty(Settings.Comment))
+				ProcessRegex(Settings.Comment + ".*$", Settings.CommentColor);
                                     
 			SelectionStart = nPosition;
 			SelectionLength = 0;
@@ -147,6 +167,39 @@ namespace GRInstaller3000Creator
 				SelectionColor = color;
 			}
 		}
+
+		private void ProgressWord(string line)
+		{
+			var lineMass = line.Split(' ');
+
+			foreach (var word in lineMass)
+			{
+				if (_colorizeWordDic.ContainsKey(word.ToLower()))
+				{
+					foreach (var pos in AllIndexesOf(line, word))
+					{
+						SelectionStart = m_nLineStart + pos;
+						SelectionLength = word.Length;
+						SelectionColor = _colorizeWordDic[word.ToLower()];
+					}
+				}
+			}
+		}
+
+		public static List<int> AllIndexesOf(string str, string value)
+		{
+			if (String.IsNullOrEmpty(value))
+				throw new ArgumentException("the string to find may not be empty", "value");
+			var indexes = new List<int>();
+			for (int index = 0; ; index += value.Length)
+			{
+				index = str.IndexOf(value, index);
+				if (index == -1)
+					return indexes;
+				indexes.Add(index);
+			}
+		}
+
 		/// <summary>
 		/// Compiles the keywords as a regular expression.
 		/// </summary>

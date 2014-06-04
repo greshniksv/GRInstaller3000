@@ -81,6 +81,8 @@ namespace GRInstaller3000Classes
 
         private void CreateFunction(IEnumerable<string> dataMass)
         {
+			_functionList.Clear();
+
             int ifLevel = 0;
             var func = new List<FunctionItem>();
             var manageWords = new string[] { "if", "unless", "each","for","while" };

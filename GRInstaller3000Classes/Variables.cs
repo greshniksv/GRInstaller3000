@@ -29,6 +29,66 @@ namespace GRInstaller3000Classes
 			Set(ob, Name);
 		}
 
+		public VariableItem(string var)
+		{
+
+			// if true|false bool
+			if (var == "true" || var == "false")
+			{
+				bool b = (var == "true");
+				Set(b, Guid.NewGuid().ToString());
+			}
+
+			// if ' - char
+			if (var.Contains("'"))
+			{
+				char d;
+				if (char.TryParse(var.Replace("'","").Trim(), out d))
+				{
+					Set(d, Guid.NewGuid().ToString());
+				}
+			}
+
+			// if " - string
+			if (var.Contains("\""))
+			{
+				Set(var.Replace("\"","").Trim(), Guid.NewGuid().ToString());
+			}
+
+			// if . and digits - double
+			if (var.Contains("."))
+			{
+				if (var.Replace('.', '0').All(Char.IsDigit))
+				{
+					double d;
+					if (double.TryParse(var, out d))
+					{
+						Set(d, Guid.NewGuid().ToString());
+					}
+				}
+			}
+
+			// byte
+			if (var.All(Char.IsDigit))
+			{
+				byte b;
+				if (byte.TryParse(var, out b))
+				{
+					Set(b, Guid.NewGuid().ToString());
+				}
+			}
+
+			// int
+			if (var.All(Char.IsDigit))
+			{
+				Int32 i;
+				if (Int32.TryParse(var,out i))
+				{
+					Set(i, Guid.NewGuid().ToString());
+				}
+			}
+
+		}
 
 		public string StatementId { get; set; }
 		public string Name { get; set; }
@@ -183,6 +243,41 @@ namespace GRInstaller3000Classes
 
 		#region Overload perators
 
+		public static bool operator &(VariableItem a, VariableItem b)
+		{
+			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
+
+			if (a.Type == VariableType.Bool)
+			{
+				return (a._Bool==true && b._Bool==true);
+			}
+			else
+			{
+				throw new Exception("Types can not be compared. Variable: [" + a.Name + "] - [" + b.Name + "]");
+			}
+
+			return false;
+		}
+
+
+		public static bool operator |(VariableItem a, VariableItem b)
+		{
+			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
+
+			if (a.Type == VariableType.Bool)
+			{
+				return (a._Bool == true || b._Bool == true);
+			}
+			else
+			{
+				throw new Exception("Types can not be compared. Variable: [" + a.Name + "] - [" + b.Name + "]");
+			}
+
+			return false;
+		}
+
+
+
 		public static bool operator >(VariableItem a, VariableItem b)
 		{
 			if(a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: ["+a.Name+"] - ["+b.Name+"]");
@@ -293,6 +388,11 @@ namespace GRInstaller3000Classes
 
 		public static bool operator ==(VariableItem a, VariableItem b)
 		{
+			if (((object)a) == null || ((object)b) == null)
+			{
+				return (((object)a) == null && ((object)b) == null);
+			}
+
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
 			switch (a.Type)
@@ -316,6 +416,11 @@ namespace GRInstaller3000Classes
 
 		public static bool operator !=(VariableItem a, VariableItem b)
 		{
+			if (((object)a) == null || ((object)b) == null)
+			{
+				return !(((object)a) == null && ((object)b) == null);
+			}
+
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
 			switch (a.Type)
@@ -459,7 +564,15 @@ namespace GRInstaller3000Classes
 
 		public VariableItem GetVariable(string name)
 		{
-			return ((VariableItem)_variableList[name]);
+			var retVar = ((VariableItem)_variableList[name]);
+			if (retVar == null)
+			{
+				return new VariableItem(name);
+			}
+			else
+			{
+				return retVar;
+			}
 		}
 
 		public void ClearByStatementId(string id)

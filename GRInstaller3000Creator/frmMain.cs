@@ -24,30 +24,29 @@ namespace GRInstaller3000Creator
         {
 	        _engine.FunctionExecuteCodeEvent += (function, command) => lbLog.Items.Insert(0,function+": "+command);
 
-            srtbSource.Settings.ManageKeywords.Add("def");
-            srtbSource.Settings.ManageKeywords.Add("if");
-            srtbSource.Settings.ManageKeywords.Add("then");
-            srtbSource.Settings.ManageKeywords.Add("else");
-            srtbSource.Settings.ManageKeywords.Add("elseif");
-            srtbSource.Settings.ManageKeywords.Add("end");
-            srtbSource.Settings.ManageKeywords.Add("var");
-
-			srtbSource.Settings.ManageKeywords.Add("true");
-			srtbSource.Settings.ManageKeywords.Add("false");
-
-            srtbSource.Settings.ManageKeywords.Add("or");
-            srtbSource.Settings.ManageKeywords.Add("and");
-
+            srtbSource.ColorizeWordDic.Add("def", Color.Blue);
+			srtbSource.ColorizeWordDic.Add("if", Color.Blue);
+			srtbSource.ColorizeWordDic.Add("then", Color.Blue);
+			srtbSource.ColorizeWordDic.Add("else", Color.Blue);
+			srtbSource.ColorizeWordDic.Add("elseif", Color.Blue);
+			srtbSource.ColorizeWordDic.Add("end", Color.Blue);
+			srtbSource.ColorizeWordDic.Add("var", Color.Blue);
+			srtbSource.ColorizeWordDic.Add("true", Color.Blue);
+			srtbSource.ColorizeWordDic.Add("false", Color.Blue);
+			srtbSource.ColorizeWordDic.Add("or", Color.Blue);
+			srtbSource.ColorizeWordDic.Add("and", Color.Blue);
 
 
             foreach (var varType in _engine.GetVariableTypeList())
             {
-                srtbSource.Settings.ManageKeywords.Add(varType);
+                //srtbSource.Settings.ManageKeywords.Add(varType);
+				srtbSource.AddWord(varType, Color.Blue);
             }
             
             foreach (var name in _engine.Command.GetCommandNameList())
             {
-                srtbSource.Settings.Keywords.Add(name);
+                //srtbSource.Settings.Keywords.Add(name);
+				srtbSource.AddWord(name, Color.DarkRed);
             }
           
             srtbSource.Settings.KeywordColor = Color.DarkRed;
@@ -69,7 +68,7 @@ namespace GRInstaller3000Creator
 
             // Let's make the settings we just set valid by compiling
             // the keywords to a regular expression.
-            srtbSource.CompileKeywords();
+            //srtbSource.CompileKeywords();
 
             // Load a file and update the syntax highlighting.
             //srtbSourceScript.LoadFile("../script.lua", RichTextBoxStreamType.PlainText);
