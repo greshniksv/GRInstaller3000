@@ -22,6 +22,8 @@ namespace GRInstaller3000Creator
         private string m_strManageKeywords = "";
 		private int m_nCurSelection = 0;
 
+	    private Dictionary<string, Color> _colorizeWordDic = new Dictionary<string, Color>();
+
 		/// <summary>
 		/// The settings.
 		/// </summary>
@@ -104,21 +106,21 @@ namespace GRInstaller3000Creator
 			SelectionLength = m_nLineLength;
 			SelectionColor = Color.Black;
 
-			// Process the keywords
-			ProcessRegex(m_strKeywords, Settings.KeywordColor);
-            // Process the manage keywords
-            ProcessRegex(m_strManageKeywords, Settings.ManageKeywordColor);
-
-			// Process numbers
-			if(Settings.EnableIntegers)
-				ProcessRegex("\\b(?:[0-9]*\\.)?[0-9]+\\b", Settings.IntegerColor);
-			// Process strings
-			if(Settings.EnableStrings)
-				ProcessRegex("\"[^\"\\\\\\r\\n]*(?:\\\\.[^\"\\\\\\r\\n]*)*\"", Settings.StringColor);
-			// Process comments
-			if(Settings.EnableComments && !string.IsNullOrEmpty(Settings.Comment))
-				ProcessRegex(Settings.Comment + ".*$", Settings.CommentColor);
-
+            			// Process the keywords
+                        ProcessRegex(m_strKeywords, Settings.KeywordColor);
+                        // Process the manage keywords
+                        ProcessRegex(m_strManageKeywords, Settings.ManageKeywordColor);
+                        
+                                    // Process numbers
+                                    if(Settings.EnableIntegers)
+                                        ProcessRegex("\\b(?:[0-9]*\\.)?[0-9]+\\b", Settings.IntegerColor);
+                                    // Process strings
+                                    if(Settings.EnableStrings)
+                                        ProcessRegex("\"[^\"\\\\\\r\\n]*(?:\\\\.[^\"\\\\\\r\\n]*)*\"", Settings.StringColor);
+                                    // Process comments
+                                    if(Settings.EnableComments && !string.IsNullOrEmpty(Settings.Comment))
+                                        ProcessRegex(Settings.Comment + ".*$", Settings.CommentColor);
+                                    
 			SelectionStart = nPosition;
 			SelectionLength = 0;
 			SelectionColor = Color.Black;

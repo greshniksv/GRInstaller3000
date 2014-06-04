@@ -86,11 +86,36 @@ namespace GRInstaller3000Classes
 	    {
             var codeItem = _currentFunc.Code[pos];
             statementList.Add(Guid.NewGuid().ToString());
-            var cmdList = codeItem.Split(' ');
+            var cmdList = new List<string>(codeItem.Split(' '));
 
 	        if (cmdList[0].Equals("if", StringComparison.OrdinalIgnoreCase))
 	        {
+	            for (int i = 1; i < cmdList.Count; i++)
+	            {
+	                if (cmdList[i].Equals(">") || cmdList[i].Equals(">=") ||
+	                    cmdList[i].Equals("<") || cmdList[i].Equals("<=") ||
+	                    cmdList[i].Equals("==") || cmdList[i].Equals("!="))
+	                {
+	                    var o1 = _variables.GetVariable(cmdList[i - 1]);
+                        var o2 = _variables.GetVariable(cmdList[i + 1]);
+	                    bool rez;
 
+	                    switch (cmdList[i])
+	                    {
+	                        case ">": rez = o1 > o2; break;
+                            case ">=": rez = o1 >= o2; break;
+                            case "<": rez = o1 < o2; break;
+                            case "<=": rez = o1 <= o2; break;
+                            case "==": rez = o1 == o2; break;
+                            case "!=": rez = o1 != o2; break;
+                            default: throw new Exception("MAGIC!");
+	                    }
+	                    cmdList[i - 1] = "";
+                        cmdList[i + 1] = "";
+                        cmdList[i] = (rez?"true":"false");
+	                }
+
+	            }
 
 
 

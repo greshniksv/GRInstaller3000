@@ -35,6 +35,10 @@ namespace GRInstaller3000Creator
 			srtbSource.Settings.ManageKeywords.Add("true");
 			srtbSource.Settings.ManageKeywords.Add("false");
 
+            srtbSource.Settings.ManageKeywords.Add("or");
+            srtbSource.Settings.ManageKeywords.Add("and");
+
+
 
             foreach (var varType in _engine.GetVariableTypeList())
             {

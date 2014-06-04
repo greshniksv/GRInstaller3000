@@ -237,6 +237,60 @@ namespace GRInstaller3000Classes
 			return false;
 		}
 
+        public static bool operator >=(VariableItem a, VariableItem b)
+        {
+            if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
+
+            if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte ||
+                a.Type == VariableType.Char)
+            {
+                switch (a.Type)
+                {
+                    case VariableType.Int:
+                        return a._Int >= b._Int;
+                    case VariableType.Double:
+                        return a._Double >= b._Double;
+                    case VariableType.Byte:
+                        return a._Byte >= b._Byte;
+                    case VariableType.Char:
+                        return a._Char >= b._Char;
+                }
+            }
+            else
+            {
+                throw new Exception("Types can not be compared. Variable: [" + a.Name + "] - [" + b.Name + "]");
+            }
+
+            return false;
+        }
+
+        public static bool operator <=(VariableItem a, VariableItem b)
+        {
+            if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
+
+            if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte ||
+                a.Type == VariableType.Char)
+            {
+                switch (a.Type)
+                {
+                    case VariableType.Int:
+                        return a._Int <= b._Int;
+                    case VariableType.Double:
+                        return a._Double <= b._Double;
+                    case VariableType.Byte:
+                        return a._Byte <= b._Byte;
+                    case VariableType.Char:
+                        return a._Char <= b._Char;
+                }
+            }
+            else
+            {
+                throw new Exception("Types can not be compared. Variable: [" + a.Name + "] - [" + b.Name + "]");
+            }
+
+            return false;
+        }
+
 		public static bool operator ==(VariableItem a, VariableItem b)
 		{
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
@@ -403,7 +457,7 @@ namespace GRInstaller3000Classes
 			_variableList = new Hashtable();
 		}
 
-		public object GetData(string name)
+		public VariableItem GetVariable(string name)
 		{
 			return ((VariableItem)_variableList[name]);
 		}
