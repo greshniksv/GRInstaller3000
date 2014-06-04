@@ -22,7 +22,7 @@ namespace GRInstaller3000Classes
         {
             _variables = new Variables();
             _currentFunc = function;
-            _commands = new Commands();
+			_commands = new Commands(_variables);
 			_jumpList = new Hashtable();
         }
 

@@ -25,14 +25,17 @@ namespace GRInstaller3000Classes
         {
             string Name();
             string Information();
-            string Execute(string param);
+			string Execute(List<VariableItem> prmItem);
         }
 
         private List<ICommand> _commandList;
         private Hashtable _commandHashTable;
+		private Variables _variables;
 
-        public Commands()
+        public Commands(Variables variables)
         {
+	        _variables = variables;
+
             // Add command to list
             _commandList = new List<ICommand>
 			{
@@ -58,9 +61,10 @@ namespace GRInstaller3000Classes
 			return _commandHashTable;
 		}
 
-        private string GetParamsFromCommand(string command)
+		private List<VariableItem> GetParamsFromCommand(string command)
         {
-            return command.Substring(command.IndexOf('(') + 1, command.IndexOf(')') - (command.IndexOf('(') + 1)).Trim();
+	        var prmList = command.Substring(command.IndexOf('(') + 1, command.IndexOf(')') - (command.IndexOf('(') + 1)).Trim().Split(',');
+			return prmList.Select(s => _variables.GetVariable(s)).ToList();
         }
 
         private string GetCommandName(string command)
@@ -81,7 +85,6 @@ namespace GRInstaller3000Classes
                 throw new Exception("Command '"+command+"' not found !");
         }
 
-
         #region Commands
 
         private class Alert : ICommand
@@ -97,14 +100,13 @@ namespace GRInstaller3000Classes
                     "Icon: asterisk, error, exclamation, hand, information, none, question, stop, warning";
             }
 
-            public string Execute(string param)
+			public string Execute(List<VariableItem> param)
             {
-                var parameters = param.Split(',');
-                if (parameters.Count() != 3) throw new Exception("Alert error! Count of params not valid! ");
+				if (param.Count() != 3) throw new Exception("Alert error! Count of params not valid! ");
 
                 MessageBoxIcon icon;
-                if (!Enum.TryParse(parameters[2], true, out icon)) icon = MessageBoxIcon.Error;
-				MessageBox.Show(parameters[0], parameters[1], MessageBoxButtons.OK, (MessageBoxIcon)icon);
+				if (!Enum.TryParse(param[2].ToString(), true, out icon)) icon = MessageBoxIcon.Error;
+				MessageBox.Show(param[0].ToString(), param[1].ToString(), MessageBoxButtons.OK, (MessageBoxIcon)icon);
 
                 return null;
             }
@@ -126,18 +128,17 @@ namespace GRInstaller3000Classes
                     "Button: AbortRetryIgnore,OK,OKCancel,RetryCancel,YesNo,YesNoCancel";
             }
 
-            public string Execute(string param)
+			public string Execute(List<VariableItem> param)
             {
-                var parameters = param.Split(',');
-                if (parameters.Count() != 4) throw new Exception("Alert error! Count of params not valid! ");
+				if (param.Count() != 4) throw new Exception("Alert error! Count of params not valid! ");
 
                 MessageBoxIcon icon;
-                if (!Enum.TryParse(parameters[2], true, out icon)) icon = MessageBoxIcon.Error;
+				if (!Enum.TryParse(param[2].ToString(), true, out icon)) icon = MessageBoxIcon.Error;
 
                 MessageBoxButtons button;
-                if (!Enum.TryParse(parameters[3], true, out button)) button = MessageBoxButtons.YesNo;
+				if (!Enum.TryParse(param[3].ToString(), true, out button)) button = MessageBoxButtons.YesNo;
 
-                MessageBox.Show(parameters[0], parameters[1], button, icon);
+				MessageBox.Show(param[0].ToString(), param[1].ToString(), button, icon);
 
                 return null;
             }

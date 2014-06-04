@@ -36,7 +36,7 @@ namespace GRInstaller3000Classes
 
         public Commands Command
         {
-            get { return new Commands(); }
+            get { return new Commands(null); }
         }
         public string[] GetVariableTypeList()
         {

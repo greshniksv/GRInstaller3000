@@ -37,6 +37,7 @@ namespace GRInstaller3000Classes
 			{
 				bool b = (var == "true");
 				Set(b, Guid.NewGuid().ToString());
+				return;
 			}
 
 			// if ' - char
@@ -46,6 +47,7 @@ namespace GRInstaller3000Classes
 				if (char.TryParse(var.Replace("'","").Trim(), out d))
 				{
 					Set(d, Guid.NewGuid().ToString());
+					return;
 				}
 			}
 
@@ -53,6 +55,7 @@ namespace GRInstaller3000Classes
 			if (var.Contains("\""))
 			{
 				Set(var.Replace("\"","").Trim(), Guid.NewGuid().ToString());
+				return;
 			}
 
 			// if . and digits - double
@@ -64,6 +67,7 @@ namespace GRInstaller3000Classes
 					if (double.TryParse(var, out d))
 					{
 						Set(d, Guid.NewGuid().ToString());
+						return;
 					}
 				}
 			}
@@ -75,6 +79,7 @@ namespace GRInstaller3000Classes
 				if (byte.TryParse(var, out b))
 				{
 					Set(b, Guid.NewGuid().ToString());
+					return;
 				}
 			}
 
@@ -85,9 +90,11 @@ namespace GRInstaller3000Classes
 				if (Int32.TryParse(var,out i))
 				{
 					Set(i, Guid.NewGuid().ToString());
+					return;
 				}
 			}
 
+			throw new Exception("Can not create variable: "+var);
 		}
 
 		public string StatementId { get; set; }
@@ -393,6 +400,8 @@ namespace GRInstaller3000Classes
 				return (((object)a) == null && ((object)b) == null);
 			}
 
+			
+
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
 			switch (a.Type)
@@ -548,7 +557,7 @@ namespace GRInstaller3000Classes
 
 	
 
-	internal class Variables : IDisposable
+	public  class Variables : IDisposable
 	{
 		private Hashtable _variableList;
 
