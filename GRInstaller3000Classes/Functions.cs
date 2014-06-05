@@ -29,10 +29,10 @@ namespace GRInstaller3000Classes
 
 	    public void Execute()
         {
-            var managerialWords = new List<string>() { "if", "else", "end", "while" };
+			var managerialWords = new List<string>() { "if", "elseif", "while", "for" };
             var variableTypeList = _variables.GetVariableTypeList();
 	        var commandList = _commands.GetCommandNameList();
-	        var statementList = new List<string> {_currentFunc.Id};
+	        var statementList = new List<string> {_currentFunc.Id.ToString()};
 
 	        for(var pos=0; pos<_currentFunc.Code.Count; pos++)
 			{

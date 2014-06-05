@@ -15,11 +15,11 @@ namespace GRInstaller3000Classes
     {
         public string Name { get; set; }
         public List<string> Code { get; set; }
-        public string Id { get; set; }
+        public Guid Id { get; set; }
 
         public object Clone()
         {
-            return new FunctionItem() { Name = this.Name, Code = new List<string>(this.Code) };
+            return new FunctionItem() { Name = this.Name, Code = new List<string>(this.Code), Id = new Guid(Id.ToString())};
         }
     }
 
@@ -93,7 +93,7 @@ namespace GRInstaller3000Classes
                 if (buf.Contains("def"))
                 {
                     var funcName = buf.Remove(buf.IndexOf("def"), 3).Trim();
-                    func.Add(new FunctionItem() { Name = funcName, Code = new List<string>(), Id=Guid.NewGuid().ToString() });
+                    func.Add(new FunctionItem() { Name = funcName, Code = new List<string>(), Id=Guid.NewGuid() });
                 }
 
                 if(manageWords.Any(buf.Contains))

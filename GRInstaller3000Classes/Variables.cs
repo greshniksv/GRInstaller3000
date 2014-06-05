@@ -103,46 +103,30 @@ namespace GRInstaller3000Classes
 
 		#region Emplements variable.
 
-		public string _String { get; set; }
-		public int? _Int { get; set; }
-		public double? _Double { get; set; }
-		public bool? _Bool { get; set; }
-		public byte? _Byte { get; set; }
-		public char? _Char { get; set; }
 
-		public List<string> _StringList { get; set; }
-		public List<int> _IntList { get; set; }
-		public List<double> _DoubleList { get; set; }
-		public List<bool> _BoolList { get; set; }
-		public List<byte> _ByteList { get; set; }
-		public List<char> _CharList { get; set; }
+		private object Variable { get; set; }
 
 		public void Set(object ob, string name)
 		{
 			var typeSplited = new List<string>(ob.GetType().AssemblyQualifiedName.Split('[', ','));
 			typeSplited.RemoveAll(i => i.Trim().Length < 1);
+			Variable = ob;
 
 			if (!ob.GetType().Name.Contains("List"))
 			{
 				switch (ob.GetType().Name)
 				{
-					case "String":
-						_String = (string)ob; Type = VariableType.String;
+					case "String": Type = VariableType.String;
 						break;
-					case "Boolean":
-						_Bool = (bool?)ob;Type = VariableType.Bool;
+					case "Boolean":Type = VariableType.Bool;
 						break;
-					case "Double":
-						_Double = (double?)ob;Type = VariableType.Double;
+					case "Double":Type = VariableType.Double;
 						break;
-					case "Int32":
-						_Int = (int?)ob;Type = VariableType.Int;
+					case "Int32":Type = VariableType.Int;
 						break;
-					case "Char":
-						_Char = (char?)ob;Type = VariableType.Char;
+					case "Char":Type = VariableType.Char;
 						break;
-					case "Byte":
-						_Byte = (byte?)ob;Type = VariableType.Byte;
+					case "Byte":Type = VariableType.Byte;
 						break;
 
 					default:
@@ -153,23 +137,17 @@ namespace GRInstaller3000Classes
 			{
 				switch (typeSplited[1])
 				{
-					case "System.String":
-						_StringList = (List<string>)ob;Type = VariableType.ListString;
+					case "System.String":Type = VariableType.ListString;
 						break;
-					case "System.Boolean":
-						_BoolList = (List<bool>)ob;Type = VariableType.ListBool;
+					case "System.Boolean":Type = VariableType.ListBool;
 						break;
-					case "System.Double":
-						_DoubleList = (List<double>)ob;Type = VariableType.ListDouble;
+					case "System.Double":Type = VariableType.ListDouble;
 						break;
-					case "System.Int32":
-						_IntList = (List<int>)ob;Type = VariableType.ListInt;
+					case "System.Int32":Type = VariableType.ListInt;
 						break;
-					case "System.Char":
-						_CharList = (List<char>)ob;Type = VariableType.ListChar;
+					case "System.Char":Type = VariableType.ListChar;
 						break;
-					case "System.Byte":
-						_ByteList = (List<byte>)ob;Type = VariableType.Byte;
+					case "System.Byte":Type = VariableType.Byte;
 						break;
 				}
 			}
@@ -178,73 +156,8 @@ namespace GRInstaller3000Classes
 
 		public object GetData()
 		{
-			object r = null;
-
-			if (_Bool != null)
-			{
-				r = _Bool;
-				return r;
-			}
-			if (_String != null)
-			{
-				r = _String;
-				return r;
-			}
-			if (_Int != null)
-			{
-				r = _Int;
-				return r;
-			}
-			if (_Double != null)
-			{
-				r = _Double;
-				return r;
-			}
-			if (_Byte != null)
-			{
-				r = _Byte;
-				return r;
-			}
-			if (_Char != null)
-			{
-				r = _Char;
-				return r;
-			}
-
-			if (_StringList != null)
-			{
-				r = _StringList;
-				return r;
-			}
-			if (_IntList != null)
-			{
-				r = _IntList;
-				return r;
-			}
-			if (_DoubleList != null)
-			{
-				r = _DoubleList;
-				return r;
-			}
-			if (_BoolList != null)
-			{
-				r = _BoolList;
-				return r;
-			}
-			if (_ByteList != null)
-			{
-				r = _ByteList;
-				return r;
-			}
-			if (_CharList != null)
-			{
-				r = _CharList;
-				return r;
-			}
-
-			return null;
+			return Variable;
 		}
-
 
 		#endregion
 
@@ -256,7 +169,7 @@ namespace GRInstaller3000Classes
 
 			if (a.Type == VariableType.Bool)
 			{
-				return (a._Bool==true && b._Bool==true);
+				return ((bool)a.Variable && (bool)b.Variable);
 			}
 			else
 			{
@@ -273,7 +186,7 @@ namespace GRInstaller3000Classes
 
 			if (a.Type == VariableType.Bool)
 			{
-				return (a._Bool == true || b._Bool == true);
+				return ((bool)a.Variable || (bool)b.Variable);
 			}
 			else
 			{
@@ -287,7 +200,29 @@ namespace GRInstaller3000Classes
 
 		public static bool operator >(VariableItem a, VariableItem b)
 		{
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Double))
+				return (int)a.Variable > (double)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Double))
+				return (double)a.Variable > (int)b.Variable;
+
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Byte))
+				return (int)a.Variable > (byte)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Byte))
+				return (byte)a.Variable > (int)b.Variable;
+
+			if ((a.Type == VariableType.Double && b.Type == VariableType.Byte))
+				return (double)a.Variable > (byte)b.Variable;
+
+			if ((b.Type == VariableType.Double && a.Type == VariableType.Byte))
+				return (byte)a.Variable > (double)b.Variable;
+
+
 			if(a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: ["+a.Name+"] - ["+b.Name+"]");
+
+			
+
 
 			if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte ||
 			    a.Type == VariableType.Char)
@@ -295,13 +230,13 @@ namespace GRInstaller3000Classes
 				switch (a.Type)
 				{
 					case VariableType.Int:
-						return a._Int > b._Int;
+						return (int)a.Variable > (int)b.Variable;
 					case VariableType.Double:
-						return a._Double > b._Double;
+						return (double)a.Variable > (double)b.Variable;
 					case VariableType.Byte:
-						return a._Byte > b._Byte;
+						return (byte)a.Variable > (byte)b.Variable;
 					case VariableType.Char:
-						return a._Char > b._Char;
+						return (char)a.Variable > (char)b.Variable;
 				}
 			}
 			else
@@ -314,6 +249,26 @@ namespace GRInstaller3000Classes
 
 		public static bool operator <(VariableItem a, VariableItem b)
 		{
+
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Double))
+				return (int)a.Variable < (double)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Double))
+				return (double)a.Variable < (int)b.Variable;
+
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Byte))
+				return (int)a.Variable < (byte)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Byte))
+				return (byte)a.Variable < (int)b.Variable;
+
+			if ((a.Type == VariableType.Double && b.Type == VariableType.Byte))
+				return (double)a.Variable < (byte)b.Variable;
+
+			if ((b.Type == VariableType.Double && a.Type == VariableType.Byte))
+				return (byte)a.Variable < (double)b.Variable;
+
+
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
 			if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte ||
@@ -321,14 +276,15 @@ namespace GRInstaller3000Classes
 			{
 				switch (a.Type)
 				{
+					
 					case VariableType.Int:
-						return a._Int < b._Int;
+						return (int)a.Variable < (int)b.Variable;
 					case VariableType.Double:
-						return a._Double < b._Double;
+						return (double)a.Variable < (double)b.Variable;
 					case VariableType.Byte:
-						return a._Byte < b._Byte;
+						return (byte)a.Variable < (byte)b.Variable;
 					case VariableType.Char:
-						return a._Char < b._Char;
+						return (char)a.Variable < (char)b.Variable;
 				}
 			}
 			else
@@ -341,6 +297,27 @@ namespace GRInstaller3000Classes
 
         public static bool operator >=(VariableItem a, VariableItem b)
         {
+
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Double))
+				return (int)a.Variable >= (double)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Double))
+				return (double)a.Variable >= (int)b.Variable;
+
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Byte))
+				return (int)a.Variable >= (byte)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Byte))
+				return (byte)a.Variable >= (int)b.Variable;
+
+			if ((a.Type == VariableType.Double && b.Type == VariableType.Byte))
+				return (double)a.Variable >= (byte)b.Variable;
+
+			if ((b.Type == VariableType.Double && a.Type == VariableType.Byte))
+				return (byte)a.Variable >= (double)b.Variable;
+
+
+
             if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
             if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte ||
@@ -348,14 +325,16 @@ namespace GRInstaller3000Classes
             {
                 switch (a.Type)
                 {
-                    case VariableType.Int:
-                        return a._Int >= b._Int;
-                    case VariableType.Double:
-                        return a._Double >= b._Double;
-                    case VariableType.Byte:
-                        return a._Byte >= b._Byte;
-                    case VariableType.Char:
-                        return a._Char >= b._Char;
+
+					case VariableType.Int:
+						return (int)a.Variable >= (int)b.Variable;
+					case VariableType.Double:
+						return (double)a.Variable >= (double)b.Variable;
+					case VariableType.Byte:
+						return (byte)a.Variable >= (byte)b.Variable;
+					case VariableType.Char:
+						return (char)a.Variable >= (char)b.Variable;
+
                 }
             }
             else
@@ -368,27 +347,49 @@ namespace GRInstaller3000Classes
 
         public static bool operator <=(VariableItem a, VariableItem b)
         {
-            if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
-            if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte ||
-                a.Type == VariableType.Char)
-            {
-                switch (a.Type)
-                {
-                    case VariableType.Int:
-                        return a._Int <= b._Int;
-                    case VariableType.Double:
-                        return a._Double <= b._Double;
-                    case VariableType.Byte:
-                        return a._Byte <= b._Byte;
-                    case VariableType.Char:
-                        return a._Char <= b._Char;
-                }
-            }
-            else
-            {
-                throw new Exception("Types can not be compared. Variable: [" + a.Name + "] - [" + b.Name + "]");
-            }
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Double))
+				return (int)a.Variable <= (double)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Double))
+				return (double)a.Variable <= (int)b.Variable;
+
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Byte))
+				return (int)a.Variable <= (byte)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Byte))
+				return (byte)a.Variable <= (int)b.Variable;
+
+			if ((a.Type == VariableType.Double && b.Type == VariableType.Byte))
+				return (double)a.Variable <= (byte)b.Variable;
+
+			if ((b.Type == VariableType.Double && a.Type == VariableType.Byte))
+				return (byte)a.Variable <= (double)b.Variable;
+
+
+
+			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
+
+			if (a.Type == VariableType.Int || a.Type == VariableType.Double || a.Type == VariableType.Byte ||
+				a.Type == VariableType.Char)
+			{
+				switch (a.Type)
+				{
+					case VariableType.Int:
+						return (int)a.Variable >= (int)b.Variable;
+					case VariableType.Double:
+						return (double)a.Variable >= (double)b.Variable;
+					case VariableType.Byte:
+						return (byte)a.Variable >= (byte)b.Variable;
+					case VariableType.Char:
+						return (char)a.Variable >= (char)b.Variable;
+
+				}
+			}
+			else
+			{
+				throw new Exception("Types can not be compared. Variable: [" + a.Name + "] - [" + b.Name + "]");
+			}
 
             return false;
         }
@@ -400,24 +401,42 @@ namespace GRInstaller3000Classes
 				return (((object)a) == null && ((object)b) == null);
 			}
 
-			
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Double))
+				return (int)a.Variable == (double)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Double))
+				return (double)a.Variable == (int)b.Variable;
+
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Byte))
+				return (int)a.Variable == (byte)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Byte))
+				return (byte)a.Variable == (int)b.Variable;
+
+			if ((a.Type == VariableType.Double && b.Type == VariableType.Byte))
+				return (double)a.Variable == (byte)b.Variable;
+
+			if ((b.Type == VariableType.Double && a.Type == VariableType.Byte))
+				return (byte)a.Variable == (double)b.Variable;
+
+
 
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
 			switch (a.Type)
 			{
 				case VariableType.Int:
-					return a._Int == b._Int;
+					return (int)a.Variable == (int)b.Variable;
 				case VariableType.Double:
-					return a._Double == b._Double;
+					return (double)a.Variable == (double)b.Variable;
 				case VariableType.Byte:
-					return a._Byte == b._Byte;
+					return (byte)a.Variable == (byte)b.Variable;
 				case VariableType.Char:
-					return a._Char == b._Char;
+					return (char)a.Variable == (char)b.Variable;
 				case VariableType.String:
-					return a._String == b._String;
+					return (string)a.Variable == (string)b.Variable;
 				case VariableType.Bool:
-					return a._Bool == b._Bool;
+					return (bool)a.Variable == (bool)b.Variable;
 			}
 
 			return false;
@@ -430,22 +449,41 @@ namespace GRInstaller3000Classes
 				return !(((object)a) == null && ((object)b) == null);
 			}
 
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Double))
+				return (int)a.Variable != (double)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Double))
+				return (double)a.Variable != (int)b.Variable;
+
+			if ((a.Type == VariableType.Int && b.Type == VariableType.Byte))
+				return (int)a.Variable != (byte)b.Variable;
+
+			if ((b.Type == VariableType.Int && a.Type == VariableType.Byte))
+				return (byte)a.Variable != (int)b.Variable;
+
+			if ((a.Type == VariableType.Double && b.Type == VariableType.Byte))
+				return (double)a.Variable != (byte)b.Variable;
+
+			if ((b.Type == VariableType.Double && a.Type == VariableType.Byte))
+				return (byte)a.Variable != (double)b.Variable;
+
+
 			if (a.Type != b.Type) throw new Exception("Type not same for unary operation. Variable: [" + a.Name + "] - [" + b.Name + "]");
 
 			switch (a.Type)
 			{
 				case VariableType.Int:
-					return a._Int != b._Int;
+					return (int)a.Variable != (int)b.Variable;
 				case VariableType.Double:
-					return a._Double != b._Double;
+					return (double)a.Variable != (double)b.Variable;
 				case VariableType.Byte:
-					return a._Byte != b._Byte;
+					return (byte)a.Variable != (byte)b.Variable;
 				case VariableType.Char:
-					return a._Char != b._Char;
+					return (char)a.Variable != (char)b.Variable;
 				case VariableType.String:
-					return a._String != b._String;
+					return (string)a.Variable != (string)b.Variable;
 				case VariableType.Bool:
-					return a._Bool != b._Bool;
+					return (bool)a.Variable != (bool)b.Variable;
 			}
 
 			return false;
@@ -462,13 +500,13 @@ namespace GRInstaller3000Classes
 				switch (a.Type)
 				{
 					case VariableType.Int:
-						return new VariableItem(a._Int + b._Int);
+						return new VariableItem((int)a.Variable + (int)b.Variable);
 					case VariableType.Double:
-						return new VariableItem(a._Double + b._Double);
+						return new VariableItem((double)a.Variable + (double)b.Variable);
 					case VariableType.Byte:
-						return new VariableItem(a._Byte + b._Byte);
+						return new VariableItem((byte)a.Variable + (byte)b.Variable);
 					case VariableType.String:
-						return new VariableItem(a._String + b._String);
+						return new VariableItem((string)a.Variable + (string)b.Variable);
 				}
 			}
 
@@ -484,11 +522,11 @@ namespace GRInstaller3000Classes
 				switch (a.Type)
 				{
 					case VariableType.Int:
-						return new VariableItem(a._Int - b._Int);
+						return new VariableItem((int)a.Variable - (int)b.Variable);
 					case VariableType.Double:
-						return new VariableItem(a._Double - b._Double);
+						return new VariableItem((double)a.Variable - (double)b.Variable);
 					case VariableType.Byte:
-						return new VariableItem(a._Byte- b._Byte);
+						return new VariableItem((byte)a.Variable - (byte)b.Variable);
 				}
 			}
 
@@ -504,11 +542,11 @@ namespace GRInstaller3000Classes
 				switch (a.Type)
 				{
 					case VariableType.Int:
-						return new VariableItem(a._Int / b._Int);
+						return new VariableItem((int)a.Variable / (int)b.Variable);
 					case VariableType.Double:
-						return new VariableItem(a._Double / b._Double);
+						return new VariableItem((double)a.Variable / (double)b.Variable);
 					case VariableType.Byte:
-						return new VariableItem((byte)(a._Byte / b._Byte));
+						return new VariableItem((byte)a.Variable / (byte)b.Variable);
 				}
 			}
 
@@ -528,14 +566,15 @@ namespace GRInstaller3000Classes
 				switch (a.Type)
 				{
 					case VariableType.Int:
-						return new VariableItem(a._Int * b._Int);
+						return new VariableItem((int)a.Variable * (int)b.Variable);
 					case VariableType.Double:
-						return new VariableItem(a._Double * b._Double);
+						return new VariableItem((double)a.Variable * (double)b.Variable);
 					case VariableType.Byte:
-						return new VariableItem((byte)(a._Byte * b._Byte));
+						return new VariableItem((byte)a.Variable * (byte)b.Variable);
+
 					case VariableType.String:
 						string ret = string.Empty;
-						for (int i = 0; i < b._Int; i++) ret += a._String;
+						for (int i = 0; i < (int)b.Variable; i++) ret += (string)a.Variable;
 						return new VariableItem(ret);
 				}
 			}
@@ -543,8 +582,6 @@ namespace GRInstaller3000Classes
 			throw new Exception("Unary operation (*) return null !");
 		}
 
-
-		
 
 		#endregion
 
