@@ -15,8 +15,41 @@ namespace GRInstaller3000Classes
 		ListString, ListInt, ListBool, ListDouble, ListByte, ListChar
 	}
 
-	public class VariableItem
+	public partial class VariableItem
 	{
+
+		public string StatementId { get; set; }
+		public string Name { get; set; }
+		public VariableType Type { get; set; }
+
+		protected bool Equals(VariableItem other)
+		{
+			return string.Equals(StatementId, other.StatementId) && 
+				string.Equals(Name, other.Name) && 
+				Type == other.Type && 
+				Equals(Variable, other.Variable);
+		}
+
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (ReferenceEquals(this, obj)) return true;
+			if (obj.GetType() != this.GetType()) return false;
+			return Equals((VariableItem) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				int hashCode = (StatementId != null ? StatementId.GetHashCode() : 0);
+				hashCode = (hashCode*397) ^ (Name != null ? Name.GetHashCode() : 0);
+				hashCode = (hashCode*397) ^ (int) Type;
+				hashCode = (hashCode*397) ^ (Variable != null ? Variable.GetHashCode() : 0);
+				return hashCode;
+			}
+		}
+
 		public VariableItem(object ob, string name)
 		{
 			Name = name;
@@ -29,9 +62,16 @@ namespace GRInstaller3000Classes
 			Set(ob, Name);
 		}
 
+
+
 		public VariableItem(string var)
 		{
+			Initialize(var);
+		}
 
+		public virtual void Initialize(string var)
+		{
+			//var var = _stringVariableForInit;
 			// if true|false bool
 			if (var == "true" || var == "false")
 			{
@@ -44,7 +84,7 @@ namespace GRInstaller3000Classes
 			if (var.Contains("'"))
 			{
 				char d;
-				if (char.TryParse(var.Replace("'","").Trim(), out d))
+				if (char.TryParse(var.Replace("'", "").Trim(), out d))
 				{
 					Set(d, Guid.NewGuid().ToString());
 					return;
@@ -54,7 +94,7 @@ namespace GRInstaller3000Classes
 			// if " - string
 			if (var.Contains("\""))
 			{
-				Set(var.Replace("\"","").Trim(), Guid.NewGuid().ToString());
+				Set(var.Replace("\"", "").Trim(), Guid.NewGuid().ToString());
 				return;
 			}
 
@@ -87,19 +127,17 @@ namespace GRInstaller3000Classes
 			if (var.All(Char.IsDigit))
 			{
 				Int32 i;
-				if (Int32.TryParse(var,out i))
+				if (Int32.TryParse(var, out i))
 				{
 					Set(i, Guid.NewGuid().ToString());
 					return;
 				}
 			}
 
-			throw new Exception("Can not create variable: "+var);
+			throw new Exception("Can not create variable: " + var);
 		}
 
-		public string StatementId { get; set; }
-		public string Name { get; set; }
-		public VariableType Type { get; set; }
+		
 
 		#region Emplements variable.
 

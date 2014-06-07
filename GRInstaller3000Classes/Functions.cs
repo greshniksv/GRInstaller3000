@@ -12,7 +12,7 @@ namespace GRInstaller3000Classes
         private Commands _commands;
         private readonly FunctionItem _currentFunc;
         private Variables _variables;
-	    private Hashtable _jumpList;
+		private Hashtable _jumpList;
 
 	    public delegate void ExecuteCode(string function, string command);
 		public event ExecuteCode ExecuteCodeEvent = delegate { };
@@ -26,6 +26,37 @@ namespace GRInstaller3000Classes
 			_jumpList = new Hashtable();
         }
 
+	    private int? IsJumpTo(int pos)
+	    {
+		    if (_jumpList.ContainsKey(pos))
+		    {
+			    if (_jumpList[pos] is int)
+			    {
+				    var p = (int) _jumpList[pos];
+					_jumpList.Remove(pos);
+				    return p;
+			    }
+				
+				if (_jumpList[pos] is List<int>)
+				{
+					var p = (List<int>) _jumpList[pos];
+					if (p.Count > 1)
+					{
+						var r = p.Last();
+						p.Remove(r);
+						return r;
+					}
+					else
+					{
+						var r = p.Last();
+						p.Remove(r);
+						_jumpList.Remove(pos);
+						return r;
+					}
+				}
+				
+			}
+	    }
 
 	    public void Execute()
         {
@@ -35,13 +66,9 @@ namespace GRInstaller3000Classes
 	        var statementList = new List<string> {_currentFunc.Id.ToString()};
 
 	        for(var pos=0; pos<_currentFunc.Code.Count; pos++)
-			{
-				if (_jumpList[pos] != null)
-				{
-					pos = (int)_jumpList[pos];
-					_jumpList.Remove(pos);
-					continue;
-				}
+	        {
+		        int? newPos;
+				if ((newPos = IsJumpTo(pos)) != null) { pos = (int)newPos; continue; }
 
 				var codeItem = _currentFunc.Code[pos];
 	            ExecuteCodeEvent(_currentFunc.Name,codeItem);
@@ -59,11 +86,7 @@ namespace GRInstaller3000Classes
 				{
 					/* Execute jumping operators */
                     CalculateJumpOper(pos, ref statementList);
-					if (_jumpList[pos] != null)
-					{
-						pos = (int)_jumpList[pos];
-						_jumpList.Remove(pos);
-					}
+					if ((newPos = IsJumpTo(pos)) != null) { pos = (int)newPos; }
 					continue;
 				}
 
@@ -112,10 +135,13 @@ namespace GRInstaller3000Classes
 		        if (CalculateExpression(cmdList))
 		        {
 					// execute true block 
-			        var elseBlock = FindBlock(pos, "else");
+					var elseBlock = FindBlock(pos, "else");
 					var endBlock = FindBlock(pos, "end");
-					if (elseBlock != null) _jumpList[elseBlock] = endBlock;
-					
+			        if (elseBlock != null)
+			        {
+						_jumpList[elseBlock] = new List<int> { (int)endBlock, (int)endBlock, (int)endBlock };
+			        }
+
 		        }
 		        else
 		        {
@@ -123,9 +149,9 @@ namespace GRInstaller3000Classes
 					var elseBlock = FindBlock(pos, "else");
 					var endBlock = FindBlock(pos, "end");
 					if (elseBlock != null) 
-						_jumpList[pos] = elseBlock;
+						_jumpList.Add(pos, (int)elseBlock);
 					else
-						_jumpList[pos] = endBlock;
+						_jumpList.Add(pos, (int)endBlock);
 		        }
 
 	        }

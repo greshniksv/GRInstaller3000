@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.IO;
 using System.Windows.Forms;
@@ -73,6 +74,26 @@ namespace GRInstaller3000Creator
                 return true;
 	        }
 
+			if (keyData == Keys.Enter)
+			{
+				var newTabWords = new List<string>() { "if", "elseif", "while", "for", "else", "def" };
+				int endline = 0;
+				var s = SelectionStart;
+				while (s-->0) if(Text[s]=='\n') break;
+				endline = s++;
+				while (endline++ < TextLength) if (Text[endline] == '\n') break;
+
+				var line = Text.Substring(s, endline - s);
+				bool newTab = newTabWords.Any(line.Contains);
+
+				int spaceCount = 1;
+				while (s++ < TextLength) if (Text[s] != ' ') break; else spaceCount++;
+
+				SelectionLength = 0;
+				SelectedText = "\n" + new string(' ', spaceCount + (newTab?4:0));
+				return true;
+			}
+
 	        return base.ProcessCmdKey(ref m, keyData);
 	    }
 
@@ -102,6 +123,8 @@ namespace GRInstaller3000Creator
 			m_nLineLength = m_nLineEnd - m_nLineStart;
 			// Get the current line.
 			m_strLine = Text.Substring(m_nLineStart, m_nLineLength);
+
+
 
 			// Process this line.
 			ProcessLine();
@@ -203,7 +226,7 @@ namespace GRInstaller3000Creator
 		/// <summary>
 		/// Compiles the keywords as a regular expression.
 		/// </summary>
-		public void CompileKeywords()
+		/*public void CompileKeywords()
 		{
 			for (int i = 0; i < Settings.Keywords.Count; i++)
 			{
@@ -224,7 +247,7 @@ namespace GRInstaller3000Creator
                 else
                     m_strManageKeywords += "\\b" + strKeyword + "\\b|";
             }
-		}
+		}*/
 
 		public void ProcessAllLines()
 		{
