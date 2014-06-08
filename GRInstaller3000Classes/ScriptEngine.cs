@@ -26,8 +26,8 @@ namespace GRInstaller3000Classes
 
     public class ScriptEngine
     {
-        
-        private readonly List<FunctionItem> _functionList;
+
+		private readonly List<FunctionItem> _functionList = new List<FunctionItem>();
         private Variables _globalVariables;
 
 	    public delegate void FunctionExecuteCode(string function, string command);
@@ -51,9 +51,8 @@ namespace GRInstaller3000Classes
 
         public void ExecuteFunction(string funcName = "main")
         {
-            using (var functions = new Functions(
-                _functionList.FirstOrDefault(
-					i => string.Equals(i.Name, funcName, StringComparison.OrdinalIgnoreCase))))
+			using (var functions = new Functions(_functionList.FirstOrDefault(
+				i => string.Equals(i.Name, funcName, StringComparison.OrdinalIgnoreCase)), _functionList))
             {
                 functions.ExecuteCodeEvent += (function, command) => FunctionExecuteCodeEvent(function, command);
                 functions.Execute();

@@ -78,15 +78,15 @@ namespace GRInstaller3000Creator
 			{
 				var newTabWords = new List<string>() { "if", "elseif", "while", "for", "else", "def" };
 				int endline = 0;
-				var s = SelectionStart;
+				var s = SelectionStart-1;
 				while (s-->0) if(Text[s]=='\n') break;
-				endline = s++;
-				while (endline++ < TextLength) if (Text[endline] == '\n') break;
+				endline = s+2;
+				while (endline++ < TextLength) if (Text[endline-1] == '\n') break;
 
 				var line = Text.Substring(s, endline - s);
 				bool newTab = newTabWords.Any(line.Contains);
 
-				int spaceCount = 1;
+				int spaceCount = 0;
 				while (s++ < TextLength) if (Text[s] != ' ') break; else spaceCount++;
 
 				SelectionLength = 0;

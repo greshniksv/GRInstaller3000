@@ -646,6 +646,11 @@ namespace GRInstaller3000Classes
 			_variableList = new Hashtable();
 		}
 
+		public void Add(VariableItem v)
+		{
+			_variableList.Add(v.Name,v);
+		}
+
 		public VariableItem GetVariable(string name)
 		{
 			var retVar = ((VariableItem)_variableList[name]);
